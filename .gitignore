@@ -1,0 +1,11 @@
+node_modules/
+build/
+.env
+test.js
+
+daemons.log*
+apis.log
+.idea/
+.DS_Store
+logs/
+yarn-error.log
