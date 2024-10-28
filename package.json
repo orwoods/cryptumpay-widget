@@ -1,29 +1,29 @@
 {
   "name": "cryptumpay-widget",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "main": "build/app.js",
   "scripts": {
-    "build": "rm -rf build/ && ./node_modules/.bin/tsc -p tsconfig.json",
-    "dev": "./node_modules/.bin/ts-node src/app.ts",
-    "nodemon": "nodemon --watch",
-    "start": "node build/app.js",
+    "build-dev": "node esbuild/build.dev.mjs",
+    "build-prod": "node esbuild/build.prod.mjs",
+    "build": "rm -rf static && yarn build-dev && yarn build-prod",
+    "watch": "node esbuild/watch.mjs",
     "lint": "./node_modules/.bin/eslint 'src/**/*.ts'",
     "lint:fix": "./node_modules/.bin/eslint src/**/*.ts --fix"
   },
   "keywords": [],
   "author": "Ivan Pakhomov",
   "license": "ISC",
-  "dependencies": {
-    "fastify": "^5.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2.9.0",
-    "@tsconfig/node18": "^18.2.4",
     "@types/node": "^22.7.6",
     "@typescript-eslint/parser": "^8.10.0",
+    "esbuild": "^0.24.0",
+    "esbuild-plugin-inline-import": "^1.1.0",
     "eslint": "^9.13.0",
     "eslint-plugin-import": "^2.31.0",
+    "sass": "^1.80.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
   }

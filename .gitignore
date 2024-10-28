@@ -9,3 +9,5 @@ apis.log
 .DS_Store
 logs/
 yarn-error.log
+
+static/
