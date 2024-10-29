@@ -7,7 +7,7 @@ export class ButtonAnonymous extends CPayElement {
     widgetPay.className = 'wide';
     widgetPay.textContent = 'Pay with CryptumPay';
 
-    this.registerRootItem(widgetPay);
+    this.registerRootItems([widgetPay]);
 
     return this;
   }

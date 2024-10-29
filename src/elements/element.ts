@@ -65,6 +65,7 @@ export class CPayElement {
 
     this.childs.push(child);
     child.setParent(this);
+    child.setContainer(container);
 
     for (const rootItem of rootItems) {
       dom.injectElement(container, rootItem);

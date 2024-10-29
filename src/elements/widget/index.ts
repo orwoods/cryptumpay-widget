@@ -26,16 +26,27 @@ export class Widget extends CPayElement {
     const widget = document.createElement('div');
     widget.id = 'widget';
 
-    // TODO: revert
-    if (!auth.isLogged) {
-      this.addChild(await new ButtonLogged(widget).init(), widget);
+    if (auth.isLogged) {
+      this.addChild(await this.createLoggedButton(), widget);
     } else {
-      this.addChild(await new ButtonAnonymous(widget).init(), widget);
+      this.addChild(await this.createAnonymousButton(), widget);
     }
 
     this.registerRootItems([widget]);
 
     return this;
+  }
+
+  private async createLoggedButton () {
+    const button = await new ButtonLogged().init();
+
+    return button;
+  }
+
+  private async createAnonymousButton () {
+    const button = await new ButtonAnonymous().init();
+
+    return button;
   }
 
   private update (): void {
