@@ -8,6 +8,7 @@ const common = {
   // define: { 'process.env.NODE_ENV': '"production"' },
   logLevel: 'info',
   platform: 'browser',
+  globalName: 'CPayV3',
   plugins: [
     // Always include this plugin before others
     inlineImportPlugin({

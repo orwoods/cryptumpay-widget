@@ -13,6 +13,4 @@ export const watch = async () => {
   const ctx = await esbuild.context(configs.dev);
 
   await ctx.watch();
-
-  console.log('Watching...');
 };
