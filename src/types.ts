@@ -1,5 +1,6 @@
 export interface IConfig {
   getApiBaseUrl (): string;
+  getJwtRefreshInterval (): number;
 }
 
 export interface IStore {

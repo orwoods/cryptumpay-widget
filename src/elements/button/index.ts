@@ -1,6 +1,6 @@
-import { auth } from './auth';
-import { ButtonConfig } from './buttonConfig';
-import { CPayElement } from './element';
+import { auth } from '../../services/auth';
+import { ButtonConfig } from './config';
+import { CPayElement } from '../element';
 
 export class Button extends CPayElement {
   private config: ButtonConfig;
@@ -11,17 +11,15 @@ export class Button extends CPayElement {
     this.config = new ButtonConfig(() => this.update());
   }
 
+  public async init () {
+    await this.create();
+  }
+
   public getConfig () {
     return this.config;
   }
 
-  public async createNew (elementId: string): Promise<void> {
-    await auth.ready();
-
-    this.create(this.findElement(elementId));
-  }
-
-  private create (container: HTMLElement): void {
+  private async create (): Promise<void> {
     // TODO: оформляем в зависимости от первичных настроек
     // console.warn('update', this.config.getSettings());
 
@@ -34,7 +32,8 @@ export class Button extends CPayElement {
     widgetPay.textContent = 'Pay with CryptumPay';
 
     widget.appendChild(widgetPay);
-    container.appendChild(widget);
+
+    this.registerRootItem(widget);
   }
 
   private update (): void {

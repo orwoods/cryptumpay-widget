@@ -1,4 +1,4 @@
-import { checkCurrency } from './currencies/utils';
+import { checkCurrency } from '../../currencies/utils';
 
 export class ButtonConfig {
   #callback: () => void;
