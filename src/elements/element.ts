@@ -2,7 +2,7 @@ import { dom } from '../services/dom';
 
 export class CPayElement {
   protected container?: HTMLElement;
-  protected rootItem?: HTMLElement;
+  protected rootItems: HTMLElement[] = [];
   protected parent?: CPayElement;
   private childs: CPayElement[] = [];
 
@@ -10,7 +10,8 @@ export class CPayElement {
     this.container = container;
   }
 
-  public async init () {
+  public async init (): Promise<CPayElement> {
+    return this;
   }
 
   public unload () {
@@ -24,7 +25,7 @@ export class CPayElement {
 
     this.parent = undefined;
     this.container = undefined;
-    this.rootItem = undefined;
+    this.rootItems = [];
   }
 
   public setParent (parent: CPayElement) {
@@ -35,8 +36,8 @@ export class CPayElement {
     this.container = container;
   }
 
-  protected registerRootItem (rootItem: HTMLElement) {
-    this.rootItem = rootItem;
+  protected registerRootItems (rootItems: HTMLElement[]) {
+    this.rootItems = rootItems;
   }
 
   public getParent (): CPayElement | undefined {
@@ -47,8 +48,8 @@ export class CPayElement {
     return this.container;
   }
 
-  public getRootItem (): HTMLElement | undefined {
-    return this.rootItem;
+  public getRootItems (): HTMLElement[] {
+    return this.rootItems;
   }
 
   public addChild (child: CPayElement, container?: HTMLElement) {
@@ -57,14 +58,16 @@ export class CPayElement {
       throw new Error('Container was not set');
     }
 
-    const rootItem = child.getRootItem();
-    if (!rootItem) {
-      throw new Error('Root item was not set');
+    const rootItems = child.getRootItems();
+    if (!rootItems.length) {
+      throw new Error('Root items was not set');
     }
 
     this.childs.push(child);
     child.setParent(this);
 
-    dom.injectElement(container, rootItem);
+    for (const rootItem of rootItems) {
+      dom.injectElement(container, rootItem);
+    }
   }
 }

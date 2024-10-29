@@ -1,17 +1,17 @@
 import { auth } from './services/auth';
 import { dom } from './services/dom';
-import { Button } from './elements/button';
+import { Widget } from './elements/widget';
 import { Root } from './elements/root';
 
 export const create = async (id: string) => {
   const root = new Root(id);
-  const button = new Button();
+  const widget = new Widget();
 
   dom.injectStyles();
 
-  await Promise.all([root.init(), button.init()]);
+  await Promise.all([root.init(), widget.init()]);
 
-  root.addChild(button);
+  root.addChild(widget);
 
   return {
     remove: () => {
@@ -19,6 +19,6 @@ export const create = async (id: string) => {
       dom.unload();
       auth.unload();
     },
-    config: button.getConfig(),
+    config: widget.getConfig(),
   };
 };

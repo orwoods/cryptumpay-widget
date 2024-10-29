@@ -18,8 +18,10 @@ export class Root extends CPayElement {
     this.id = id;
   }
 
-  public async init () {
+  public async init (): Promise<CPayElement> {
     await auth.ready();
+
+    return this;
   }
 
   public unload (): void {

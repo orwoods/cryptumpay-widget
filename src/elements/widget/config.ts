@@ -1,6 +1,6 @@
 import { checkCurrency } from '../../currencies/utils';
 
-export class ButtonConfig {
+export class WidgetConfig {
   #callback: () => void;
 
   #orderId?: string;

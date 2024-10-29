@@ -1,39 +1,41 @@
 import { auth } from '../../services/auth';
-import { ButtonConfig } from './config';
+import { WidgetConfig } from './config';
 import { CPayElement } from '../element';
+import { ButtonAnonymous } from './button.anonymous';
+import { ButtonLogged } from './button.logged';
 
-export class Button extends CPayElement {
-  private config: ButtonConfig;
+export class Widget extends CPayElement {
+  private config: WidgetConfig;
 
   constructor () {
     super();
 
-    this.config = new ButtonConfig(() => this.update());
-  }
-
-  public async init () {
-    await this.create();
+    this.config = new WidgetConfig(() => this.update());
   }
 
   public getConfig () {
     return this.config;
   }
 
-  private async create (): Promise<void> {
+  public async init (): Promise<CPayElement> {
+    await auth.ready();
+
     // TODO: оформляем в зависимости от первичных настроек
     // console.warn('update', this.config.getSettings());
 
     const widget = document.createElement('div');
     widget.id = 'widget';
 
-    const widgetPay = document.createElement('div');
-    widgetPay.id = 'widget_pay';
-    widgetPay.className = 'wide';
-    widgetPay.textContent = 'Pay with CryptumPay';
+    // TODO: revert
+    if (!auth.isLogged) {
+      this.addChild(await new ButtonLogged(widget).init(), widget);
+    } else {
+      this.addChild(await new ButtonAnonymous(widget).init(), widget);
+    }
 
-    widget.appendChild(widgetPay);
+    this.registerRootItems([widget]);
 
-    this.registerRootItem(widget);
+    return this;
   }
 
   private update (): void {
