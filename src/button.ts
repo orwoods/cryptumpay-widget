@@ -1,14 +1,30 @@
 import { auth } from './auth';
+import { ButtonConfig } from './buttonConfig';
 import { CPayElement } from './element';
 
 export class Button extends CPayElement {
-  public async create (elementId: string): Promise<void> {
-    await auth.ready();
+  private config: ButtonConfig;
 
-    this.createNew(this.findElement(elementId));
+  constructor () {
+    super();
+
+    this.config = new ButtonConfig(() => this.update());
   }
 
-  private createNew (container: HTMLElement): void {
+  public getConfig () {
+    return this.config;
+  }
+
+  public async createNew (elementId: string): Promise<void> {
+    await auth.ready();
+
+    this.create(this.findElement(elementId));
+  }
+
+  private create (container: HTMLElement): void {
+    // TODO: оформляем в зависимости от первичных настроек
+    // console.warn('update', this.config.getSettings());
+
     const widget = document.createElement('div');
     widget.id = 'widget';
 
@@ -19,5 +35,14 @@ export class Button extends CPayElement {
 
     widget.appendChild(widgetPay);
     container.appendChild(widget);
+  }
+
+  private update (): void {
+    if (!auth.isReady) {
+      return;
+    }
+
+    // TODO: обновляем внешку если изменили настройки в реалтайме
+    // console.warn('update', this.config.getSettings());
   }
 }

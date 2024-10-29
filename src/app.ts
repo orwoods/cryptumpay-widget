@@ -3,7 +3,10 @@ import { addStyles } from './style';
 
 addStyles();
 
-export const button = async (id: string): Promise<void> => {
+export const button = (id: string) => {
   const button = new Button();
-  await button.create(id);
+
+  button.createNew(id);
+
+  return button.getConfig();
 };

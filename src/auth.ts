@@ -8,7 +8,7 @@ class Auth implements IAuth {
 
   private logged = false;
   private isInitialization = false;
-  private isReady = false;
+  private initialized = false;
   private onReady: ((value: void) => void)[];
 
   public constructor (config: IConfig, store: IStore) {
@@ -21,8 +21,12 @@ class Auth implements IAuth {
     return this.logged;
   }
 
+  public get isReady (): boolean {
+    return this.initialized;
+  }
+
   public async ready (): Promise<void> {
-    if (this.isReady) {
+    if (this.initialized) {
       return;
     }
 
@@ -38,20 +42,15 @@ class Auth implements IAuth {
 
     return promise;
   }
+  private async init (): Promise<void> {
+    await this.refreshToken();
 
-  private setReady () {
-    this.isReady = true;
+    this.initialized = true;
     this.isInitialization = false;
 
     for (const resolve of this.onReady) {
       resolve();
     }
-  }
-
-  private async init (): Promise<void> {
-    await this.refreshToken();
-
-    await this.setReady();
   }
 
   private async refreshToken (): Promise<void> {
