@@ -22,3 +22,12 @@ export interface IStoreUnit {
 }
 
 export type TStorage = 'localStorage';
+
+export type TOrderRequest = {
+  currency: string;
+  amount: number;
+  description: string;
+  merchantId: string;
+  customerId: string;
+  clientOrderId: string;
+};

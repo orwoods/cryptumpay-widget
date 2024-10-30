@@ -1,12 +1,10 @@
 import { getStyles } from '../style';
 
 class Dom {
-  private injectedTags: HTMLElement[] = [];
+  private styles?: HTMLElement;
 
   public injectElement (container: HTMLElement, element: HTMLElement): void {
     container.appendChild(element);
-
-    this.injectedTags.push(element);
   }
 
   public injectStyles (): void {
@@ -14,6 +12,8 @@ class Dom {
     tag.textContent = getStyles();
 
     this.injectElement(document.head, tag);
+
+    this.styles = tag;
   }
 
   public findElement (elementId: string): HTMLElement {
@@ -26,13 +26,9 @@ class Dom {
   }
 
   public unload () {
-    for (const tag of this.injectedTags.reverse()) {
-      if (tag) {
-        tag.remove();
-      }
+    if (this.styles) {
+      this.styles.remove();
     }
-
-    this.injectedTags = [];
   }
 }
 

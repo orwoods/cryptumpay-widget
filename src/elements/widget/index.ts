@@ -17,7 +17,7 @@ export class Widget extends CPayElement {
     return this.config;
   }
 
-  public async init (): Promise<CPayElement> {
+  public async init (): Promise<void> {
     await auth.ready();
 
     // TODO: оформляем в зависимости от первичных настроек
@@ -33,18 +33,18 @@ export class Widget extends CPayElement {
     }
 
     this.registerRootItems([widget]);
-
-    return this;
   }
 
   private async createLoggedButton () {
-    const button = await new ButtonLogged().init();
+    const button = new ButtonLogged(this.config);
+    await button.init();
 
     return button;
   }
 
   private async createAnonymousButton () {
-    const button = await new ButtonAnonymous().init();
+    const button = new ButtonAnonymous(this.config);
+    await button.init();
 
     return button;
   }

@@ -4,27 +4,25 @@ import { CPayElement } from './element';
 
 export class Root extends CPayElement {
   private static RegisteredIds = new Set<string>();
-  private id: string;
+  private rootId: string;
 
-  constructor (id: string) {
-    if (Root.RegisteredIds.has(id)) {
-      throw new Error(`Id ${id} is already in use`);
+  constructor (rootId: string) {
+    if (Root.RegisteredIds.has(rootId)) {
+      throw new Error(`Id ${rootId} is already in use`);
     }
 
-    super(dom.findElement(id));
+    super(dom.findElement(rootId));
 
-    Root.RegisteredIds.add(id);
+    Root.RegisteredIds.add(rootId);
 
-    this.id = id;
+    this.rootId = rootId;
   }
 
-  public async init (): Promise<CPayElement> {
+  public async init () {
     await auth.ready();
-
-    return this;
   }
 
   public unload (): void {
-    Root.RegisteredIds.delete(this.id);
+    Root.RegisteredIds.delete(this.rootId);
   }
 }

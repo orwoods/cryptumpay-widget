@@ -1,14 +1,16 @@
-import { CPayElement } from '../element';
+import { ButtonCommon } from './button.common';
 
-export class ButtonAnonymous extends CPayElement {
-  public async init (): Promise<CPayElement> {
+export class ButtonAnonymous extends ButtonCommon {
+  public async init (): Promise<void> {
     const widgetPay = document.createElement('div');
     widgetPay.id = 'widget_pay';
     widgetPay.className = 'wide';
     widgetPay.textContent = 'Pay with CryptumPay';
 
-    this.registerRootItems([widgetPay]);
+    this.button = widgetPay;
 
-    return this;
+    widgetPay.addEventListener('click', this.click.bind(this));
+
+    this.registerRootItems([widgetPay]);
   }
 }

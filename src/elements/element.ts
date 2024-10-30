@@ -1,25 +1,26 @@
 import { dom } from '../services/dom';
 
 export class CPayElement {
+  private static maxId = 0;
+
+  private readonly id = ++CPayElement.maxId;
   protected container?: HTMLElement;
   protected rootItems: HTMLElement[] = [];
   protected parent?: CPayElement;
-  private childs: CPayElement[] = [];
+  private childs = new Map<number, CPayElement>();
 
   constructor (container?: HTMLElement) {
     this.container = container;
   }
 
-  public async init (): Promise<CPayElement> {
-    return this;
+  public async init (): Promise<void> {
   }
 
   public unload () {
   }
 
   public cascadeUnload () {
-    this.childs.forEach((child) => child.cascadeUnload());
-    this.childs = [];
+    this.childs.forEach((child) => this.removeChild(child));
 
     this.unload();
 
@@ -28,11 +29,11 @@ export class CPayElement {
     this.rootItems = [];
   }
 
-  public setParent (parent: CPayElement) {
+  public setParent (parent?: CPayElement) {
     this.parent = parent;
   }
 
-  protected setContainer (container: HTMLElement) {
+  protected setContainer (container?: HTMLElement) {
     this.container = container;
   }
 
@@ -63,12 +64,42 @@ export class CPayElement {
       throw new Error('Root items was not set');
     }
 
-    this.childs.push(child);
+    this.childs.set(child.id, child);
+
     child.setParent(this);
     child.setContainer(container);
 
-    for (const rootItem of rootItems) {
-      dom.injectElement(container, rootItem);
+    for (const item of rootItems) {
+      dom.injectElement(container, item);
+    }
+  }
+
+  public beforeRemoveChild (child: CPayElement) {
+  }
+
+  public removeChild (child: CPayElement) {
+    const rootItems = child.getRootItems();
+    if (!rootItems.length) {
+      throw new Error('Root items was not set');
+    }
+
+    this.beforeRemoveChild(child);
+
+    child.cascadeUnload();
+    child.setParent();
+    child.setContainer();
+
+    for (const item of rootItems) {
+      item.remove();
+    }
+
+    this.childs.delete(child.id);
+  }
+
+  public remove () {
+    const parent = this.getParent();
+    if (parent) {
+      parent.removeChild(this);
     }
   }
 }

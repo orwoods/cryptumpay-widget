@@ -1,7 +1,7 @@
-import { CPayElement } from '../element';
+import { ButtonCommon } from './button.common';
 
-export class ButtonLogged extends CPayElement {
-  public async init (): Promise<CPayElement> {
+export class ButtonLogged extends ButtonCommon {
+  public async init (): Promise<void> {
     const widgetPay = document.createElement('div');
     widgetPay.id = 'widget_pay';
     widgetPay.textContent = 'Pay';
@@ -29,7 +29,5 @@ export class ButtonLogged extends CPayElement {
     widgetSettings.appendChild(widgetWallet);
 
     this.registerRootItems([widgetPay, widgetSettings]);
-
-    return this;
   }
 }
