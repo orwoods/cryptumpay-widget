@@ -1,6 +1,14 @@
 import { store } from '../store';
 import { config } from '../config';
-import { IConfig, IStore, TOrderRequest } from '../types';
+import { IConfig, IStore, TJustCreatedOrder, TOrderRequest } from '../types';
+
+export type TRequestParams = {
+  endpoint: string;
+  data?: Record<string, any>;
+  method?: 'POST' | 'GET' | 'PUT' | 'DELETE';
+  withCredentials?: boolean;
+  withAuthorization?: boolean;
+};
 
 class Api {
   private config: IConfig;
@@ -11,41 +19,64 @@ class Api {
     this.store = store;
   }
 
-  private async post (endpoint: string, data: Record<string, any>): Promise<any> {
-    const url = `${this.config.getApiBaseUrl()}${endpoint}`;
+  private async request <T> ({
+    endpoint,
+    method = 'GET',
+    data = {},
+    withCredentials = false,
+    withAuthorization = true,
+  }: TRequestParams): Promise<T> {
+    const url = new URL(`${this.config.getApiBaseUrl()}${endpoint}`);
 
-    return new Promise((resolve, reject) => {
-      fetch(url, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.store.getAccessToken()}`,
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => {
-          if (response.status === 401) {
-            throw new Error('Unauthorized');
-          } else if (response.status !== 200) {
-            throw response;
-          }
+    const requestParams: RequestInit = {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
 
-          return response.json();
-        })
-        .then((data) => {
-          resolve(data);
-        })
-        .catch((error) => {
-          console.warn(error);
+    if (method === 'GET') {
+      Object.keys(data).forEach((key) => url.searchParams.append(key, data[key]));
+    } else {
+      requestParams.body = JSON.stringify(data);
+    }
 
-          reject();
-        });
-    });
+    if (withCredentials) {
+      requestParams.credentials = 'include';
+    }
+
+    if (withAuthorization) {
+      requestParams.headers = {
+        ...requestParams.headers,
+        Authorization: `Bearer ${this.store.getAccessToken()}`,
+      };
+    }
+
+    try {
+      const response = await fetch(url, requestParams);
+
+      if (response.status === 401) {
+        throw new Error('Unauthorized request');
+      } else if (response.status !== 200) {
+        throw new Error('Response code is not 200');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.warn(error);
+
+      throw new Error('Unexpected error');
+    }
   }
 
   public async createOrder (order: TOrderRequest) {
-    return await this.post('/order', order);
+    return await this.request<TJustCreatedOrder>({
+      endpoint: '/order',
+      method: 'POST',
+      data: order,
+      withAuthorization: true,
+      withCredentials: true,
+    });
   }
 }
 

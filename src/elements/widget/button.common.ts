@@ -48,7 +48,7 @@ export abstract class ButtonCommon extends CPayElement {
       console.warn('order result:');
       console.warn(data);
 
-      const orderId = '100500';
+      const orderId = data.orderId;
 
       this.locked = true;
 

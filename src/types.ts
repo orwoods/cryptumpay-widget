@@ -31,3 +31,7 @@ export type TOrderRequest = {
   customerId: string;
   clientOrderId: string;
 };
+
+export type TJustCreatedOrder = {
+  orderId: string;
+};
