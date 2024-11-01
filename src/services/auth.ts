@@ -64,7 +64,7 @@ class Auth implements IAuth {
   }
 
   public async refreshToken (): Promise<void> {
-    const url = `${this.config.getApiBaseUrl()}/user/refresh-token`;
+    const url = `${this.config.getApiBaseUrl()}/auth/refresh-token`;
 
     if (this.autoRefreshToken) {
       clearInterval(this.autoRefreshToken);
@@ -105,7 +105,7 @@ class Auth implements IAuth {
   }
 
   public async logout (): Promise<boolean> {
-    const url = `${this.config.getApiBaseUrl()}/user/logout`;
+    const url = `${this.config.getApiBaseUrl()}/auth/logout`;
 
     return new Promise((resolve) => {
       fetch(url, { method: 'POST', credentials: 'include' })

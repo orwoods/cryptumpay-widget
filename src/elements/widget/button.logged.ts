@@ -1,3 +1,4 @@
+import { api } from '../../api';
 import { ButtonCommon } from './button.common';
 
 export class ButtonLogged extends ButtonCommon {
@@ -27,6 +28,11 @@ export class ButtonLogged extends ButtonCommon {
 
     widgetSettings.appendChild(widgetPrice);
     widgetSettings.appendChild(widgetWallet);
+
+    widgetWallet.addEventListener('click', async () => {
+      const user = await api.getUser();
+      console.warn(user);
+    });
 
     this.registerRootItems([widgetPay, widgetSettings]);
   }

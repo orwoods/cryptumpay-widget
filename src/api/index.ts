@@ -78,6 +78,13 @@ class Api {
       withCredentials: true,
     });
   }
+
+  public async getUser () {
+    return await this.request<TJustCreatedOrder>({
+      endpoint: '/user',
+      withAuthorization: true,
+    });
+  }
 }
 
 export const api = new Api(config, store);
