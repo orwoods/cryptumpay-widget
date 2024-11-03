@@ -42,19 +42,19 @@ export abstract class ButtonCommon extends CPayElement {
         description: settings.description || '',
         merchantId: settings.merchantId || '',
         customerId: settings.customerId || '',
-        clientOrderId: settings.clientOrderId || '',
+        orderId: settings.orderId || '',
       });
 
       console.warn('order result:');
       console.warn(data);
 
-      const orderId = data.orderId;
+      const { id } = data;
 
       this.locked = true;
 
       await auth.refreshToken();
 
-      this.addChild(await this.openOrderPopup(orderId), this.getContainer());
+      this.addChild(await this.openOrderPopup(id), this.getContainer());
     } catch {
       const oldText = this.button.textContent;
       this.button.textContent = '😞';
@@ -66,7 +66,9 @@ export abstract class ButtonCommon extends CPayElement {
     }
   }
 
-  private async openOrderPopup (orderId: string) {
+  private async openOrderPopup (id: string) {
+    console.warn('openOrderPopup', id);
+
     const popup = new OrderPopup();
     await popup.init();
 

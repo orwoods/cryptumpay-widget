@@ -6,7 +6,6 @@ export class WidgetConfig {
   #orderId?: string;
   #customerId?: string;
   #merchantId?: string;
-  #clientOrderId?: string;
   #amount?: number;
   #canEditAmount?: boolean;
   #currency?: string;
@@ -46,16 +45,6 @@ export class WidgetConfig {
     this.#callback();
   }
 
-  public setClientOrderId (value: string) {
-    if (this.#clientOrderId === value) {
-      return;
-    }
-
-    this.#clientOrderId = value;
-
-    this.#callback();
-  }
-
   public setPrice (amount: number, currency: string, canEditAmount: boolean) {
     if (this.#amount === amount && this.#currency === currency && this.#canEditAmount === canEditAmount) {
       return;
@@ -85,7 +74,6 @@ export class WidgetConfig {
       orderId: this.#orderId,
       customerId: this.#customerId,
       merchantId: this.#merchantId,
-      clientOrderId: this.#clientOrderId,
       amount: this.#amount,
       canEditAmount: this.#canEditAmount,
       currency: this.#currency,

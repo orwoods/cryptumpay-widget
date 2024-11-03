@@ -29,9 +29,9 @@ export type TOrderRequest = {
   description: string;
   merchantId: string;
   customerId: string;
-  clientOrderId: string;
+  orderId: string;
 };
 
 export type TJustCreatedOrder = {
-  orderId: string;
+  id: string;
 };
