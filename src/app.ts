@@ -2,6 +2,7 @@ import { auth } from './services/auth';
 import { dom } from './services/dom';
 import { Widget } from './elements/widget';
 import { Root } from './elements/root';
+import { api } from './api';
 
 export const create = async (id: string) => {
   const root = new Root(id);
@@ -20,5 +21,8 @@ export const create = async (id: string) => {
       auth.unload();
     },
     config: widget.getConfig(),
+    api: {
+      getCurrencies: () => api.getCurrencies(),
+    },
   };
 };

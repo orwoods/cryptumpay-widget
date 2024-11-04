@@ -1,5 +1,3 @@
-import { checkCurrency } from '../../currencies/utils';
-
 export class WidgetConfig {
   #callback: () => void;
 
@@ -49,8 +47,6 @@ export class WidgetConfig {
     if (this.#amount === amount && this.#currency === currency && this.#canEditAmount === canEditAmount) {
       return;
     }
-
-    checkCurrency(currency);
 
     this.#amount = amount;
     this.#currency = currency;

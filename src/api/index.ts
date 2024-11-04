@@ -80,10 +80,18 @@ class Api {
   }
 
   public async getUser () {
-    return await this.request<TJustCreatedOrder>({
+    return await this.request({
       endpoint: '/user',
       withAuthorization: true,
     });
+  }
+
+  public async getCurrencies () {
+    const result = await this.request<{ currencies: string[] }>({
+      endpoint: '/currencies',
+    });
+
+    return result?.currencies || [];
   }
 }
 
