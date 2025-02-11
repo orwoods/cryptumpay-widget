@@ -1,6 +1,8 @@
 import { store } from '../store';
 import { config } from '../config';
-import { IConfig, IStore, TJustCreatedOrder, TOrderRequest } from '../types';
+import { IConfig, IStore, TJustCreatedOrder, TNewJwtToken, TOrderRequest } from '../types';
+import { BasicError } from '../errors/basicError';
+import { AccessDeniedError } from '../errors/accessDenied';
 
 export type TRequestParams = {
   endpoint: string;
@@ -45,7 +47,7 @@ class Api {
       requestParams.credentials = 'include';
     }
 
-    if (withAuthorization) {
+    if (withAuthorization && this.store.getAccessToken()) {
       requestParams.headers = {
         ...requestParams.headers,
         Authorization: `Bearer ${this.store.getAccessToken()}`,
@@ -56,17 +58,30 @@ class Api {
       const response = await fetch(url, requestParams);
 
       if (response.status === 401) {
-        throw new Error('Unauthorized request');
+        throw new AccessDeniedError('Unauthorized request');
       } else if (response.status !== 200) {
-        throw new Error('Response code is not 200');
+        throw new BasicError('Response code is not 200');
       }
 
       return await response.json();
-    } catch (error) {
-      console.warn(error);
+    } catch (err) {
+      if (err instanceof BasicError) {
+        throw err;
+      }
 
-      throw new Error('Unexpected error');
+      console.warn(err);
+
+      throw new BasicError('Unexpected error');
     }
+  }
+
+  public async refreshJwtToken () {
+    return await this.request<TNewJwtToken>({
+      endpoint: '/auth/refresh-token',
+      method: 'POST',
+      withAuthorization: false,
+      withCredentials: true,
+    });
   }
 
   public async createOrder (order: TOrderRequest) {

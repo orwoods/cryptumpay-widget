@@ -2,7 +2,7 @@ import { IConfig } from './types';
 
 class Config implements IConfig {
   getApiBaseUrl (): string {
-    return 'http://api.cryptumpay.local';
+    return 'https://api.home.cryptumpay.com';
   }
 
   getJwtRefreshInterval (): number {

@@ -1,3 +1,6 @@
+import { AccessDeniedError } from '../errors/accessDenied';
+import { BasicError } from '../errors/basicError';
+import { api } from '../api';
 import { config } from '../config';
 import { store } from '../store';
 import { IConfig, IStore, IAuth } from '../types';
@@ -64,44 +67,27 @@ class Auth implements IAuth {
   }
 
   public async refreshToken (): Promise<void> {
-    const url = `${this.config.getApiBaseUrl()}/auth/refresh-token`;
-
     if (this.autoRefreshToken) {
       clearInterval(this.autoRefreshToken);
     }
 
-    return new Promise((resolve) => {
-      fetch(url, { method: 'POST', credentials: 'include' })
-        .then(response => {
-          if (response.status === 401) {
-            this.logged = false;
-            this.store.forgetSensitiveData();
+    try {
+      const data = await api.refreshJwtToken();
+      if (!data?.accessToken) {
+        throw new BasicError('Invalid response');
+      }
 
-            throw new Error('Unauthorized');
-          }
-
-          return response.json();
-        })
-        .then((data) => {
-          if (!data.accessToken) {
-            throw new Error('Invalid response');
-          }
-
-          this.logged = true;
-          this.store.setAccessToken(data.accessToken);
-
-          this.autoRefreshToken = setInterval(() => this.refreshToken(), this.config.getJwtRefreshInterval());
-
-          resolve();
-        })
-        .catch((error) => {
-          if (error.message !== 'Unauthorized') {
-            console.warn(error);
-          }
-
-          resolve();
-        });
-    });
+      this.logged = true;
+      this.store.setAccessToken(data.accessToken);
+      this.autoRefreshToken = setInterval(() => this.refreshToken(), this.config.getJwtRefreshInterval());
+    } catch (err) {
+      if (err instanceof AccessDeniedError) {
+        this.logged = false;
+        this.store.forgetSensitiveData();
+      } else {
+        console.warn(err);
+      }
+    }
   }
 
   public async logout (): Promise<boolean> {

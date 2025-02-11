@@ -8,6 +8,7 @@ export class WidgetConfig {
   #canEditAmount?: boolean;
   #currency?: string;
   #description?: string;
+  #orderType?: number;
 
   constructor (callback: () => void) {
     this.#callback = callback;
@@ -65,6 +66,22 @@ export class WidgetConfig {
     this.#callback();
   }
 
+  public setOrderType (type: number) {
+    if (this.#orderType === type) {
+      return;
+    }
+
+    if (isNaN(Number(type)) || type < 0) {
+      console.warn('Invalid order type');
+
+      return;
+    }
+
+    this.#orderType = type;
+
+    this.#callback();
+  }
+
   public getSettings () {
     return {
       orderId: this.#orderId,
@@ -74,6 +91,7 @@ export class WidgetConfig {
       canEditAmount: this.#canEditAmount,
       currency: this.#currency,
       description: this.#description,
+      orderType: this.#orderType,
     };
   }
 }

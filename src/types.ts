@@ -30,8 +30,13 @@ export type TOrderRequest = {
   merchantId: string;
   customerId: string;
   orderId: string;
+  orderType: number;
 };
 
 export type TJustCreatedOrder = {
   id: string;
+};
+
+export type TNewJwtToken = {
+  accessToken: string;
 };

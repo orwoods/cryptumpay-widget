@@ -43,6 +43,7 @@ export abstract class ButtonCommon extends CPayElement {
         merchantId: settings.merchantId || '',
         customerId: settings.customerId || '',
         orderId: settings.orderId || '',
+        orderType: settings.orderType || 1,
       });
 
       console.warn('order result:');
